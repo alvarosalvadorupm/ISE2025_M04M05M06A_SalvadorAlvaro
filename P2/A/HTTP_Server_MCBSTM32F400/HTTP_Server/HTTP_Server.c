@@ -43,6 +43,8 @@ extern char lcd_text[2][20+1];
 
 extern osThreadId_t TID_Display;
 extern osThreadId_t TID_Led;
+extern osThreadId_t TID_RTC;
+extern osThreadId_t TID_ALARM;
 
 bool LEDrun;
 char lcd_text[2][20+1] = { "LCD line 1",
@@ -59,7 +61,9 @@ osThreadId_t TID_ALARM;
 /* Thread declarations */
 static void BlinkLed (void *arg);
 static void Display  (void *arg);
-													 
+static void Date_Time_RTC (void *arg);
+static void Alarm(void *arg);
+
 /* Buffers used for displaying Time and Date */
 uint8_t aShowTime[10] = {0};
 uint8_t aShowDate[10] = {0};
@@ -113,10 +117,8 @@ static __NO_RETURN void Alarm(void *arg){
 				osDelay(1000);
 				
 			}
-			
 		}
 	}
-	
 }
 
 /*----------------------------------------------------------------------------
@@ -125,8 +127,6 @@ static __NO_RETURN void Alarm(void *arg){
 static __NO_RETURN void Date_Time_RTC (void *arg) {
 	
 	(void)arg;
-	
-	RTC_Alarm_Config();
 	
 	while(1){
 		RTC_Hora_Fecha(aShowTime, aShowDate);

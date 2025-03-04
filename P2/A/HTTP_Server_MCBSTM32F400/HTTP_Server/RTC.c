@@ -84,6 +84,7 @@ void RTC_Config(void){
     /* Configure RTC Calendar */
 		RTC_DateConfig();
 		RTC_TimeConfig();
+		RTC_Alarm_Config();
   }
   else
   {
@@ -175,6 +176,9 @@ void RTC_Alarm_Config(void){
 	alarmstrcut.AlarmMask = RTC_ALARMMASK_HOURS 
 												| RTC_ALARMMASK_MINUTES 
 												| RTC_ALARMMASK_DATEWEEKDAY;	// Si pones RTC_ALARMMASK_ALL, se cuelga el programa.
+																											// En este parametro de la alarma, le indicaremos todo aquello que no queremos tener en cuenta a la hora de determinar cuando ha de saltar
+																											// esta, por lo que lo enmascararemos.
+	
 	alarmstrcut.AlarmSubSecondMask = RTC_ALARMSUBSECONDMASK_ALL;	// Configuro la alarma para que no tenga en cuenta los subsegundos y se active cuando coincidan horas, minutos y segundos. 
 	alarmstrcut.AlarmDateWeekDaySel = RTC_ALARMDATEWEEKDAYSEL_DATE;
   alarmstrcut.AlarmDateWeekDay    = 1; // se ignora con la Mask
@@ -183,18 +187,7 @@ void RTC_Alarm_Config(void){
 	// Configurar la alarma con interrupción
   HAL_RTC_SetAlarm_IT(&RtcHandle, &alarmstrcut, RTC_FORMAT_BIN);
 	
-	// Habilitamos la interrupcion de la alarma A
+	// Habilitamos la interrupcion de la alarma A y B
 	HAL_NVIC_EnableIRQ(RTC_Alarm_IRQn);
-	
-}
-
-void Parpadeo_LED(void){
-	
-	for(uint8_t i = 0; i < 5; i++){
-		
-		HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_0);
-		osDelay(1000);
-		
-	}
 	
 }
