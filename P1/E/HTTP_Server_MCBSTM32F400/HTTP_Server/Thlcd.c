@@ -267,9 +267,8 @@ void symbolToLocalBuffer_L1(uint8_t symbol){ //Escribe en la página 0 y 1, eso e
       //el primer byte y value2 lee el segundo byte. El primer byte se representa en la página 0 y el
       //segundo byte se representa en la página 1.
       
-      buffer[i+0+/*centrado1*/+positionL1] = value1; //Página 0, empieza en la columna 0
-      buffer[i+/*centrado1*/+128+positionL1] = value2; //Página 1, empieza en la columna 128
-      
+      buffer[i+0+positionL1] = value1; //Página 0, empieza en la columna 0
+      buffer[i+128+positionL1] = value2; //Página 1, empieza en la columna 128
       
     }
     positionL1 = positionL1+Arial12x12[offset];
@@ -290,8 +289,8 @@ void symbolToLocalBuffer_L2(uint8_t symbol){ //Escribe en la página 2 y 3, eso e
       value1 = Arial12x12[offset+i*2+1];
       value2 = Arial12x12[offset+i*2+2];
       
-      buffer[i+256+/*centrado2*/+positionL2] = value1; //Página 2, empieza en la columna 256
-      buffer[i+384+/*centrado2*/+positionL2] = value2; //Página 3, empieza en la columna 384
+      buffer[i+256+positionL2] = value1; //Página 2, empieza en la columna 256
+      buffer[i+384+positionL2] = value2; //Página 3, empieza en la columna 384
     }
     positionL2 = positionL2+Arial12x12[offset];
   }
@@ -312,7 +311,7 @@ void write_lcd(char cadena[], int linea, int longitudCadena){
   for(int j=0; j<longitudCadena; j++){
     symbolToLocalBuffer(linea,cadena[j]);
   }
-  LCD_Update();
+//  LCD_Update();
 }
 
 void pintar_LCD(char cadena[], int linea){
