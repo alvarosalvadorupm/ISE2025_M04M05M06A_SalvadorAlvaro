@@ -112,7 +112,7 @@ static __NO_RETURN void Display (void *arg) {
 		/* Display user text line 2 */
 		write_lcd(lcd_text[1],2, strlen(lcd_text[1]));
 		
-    LCD_Update();
+//    LCD_Update();
     
   }
 }
