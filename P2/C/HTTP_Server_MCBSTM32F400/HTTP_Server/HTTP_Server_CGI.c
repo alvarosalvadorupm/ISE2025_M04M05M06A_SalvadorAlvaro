@@ -26,6 +26,7 @@ extern uint8_t  get_button (void);
 
 extern bool LEDrun;
 extern char lcd_text[2][20+1];
+extern char rtc_text[2][20+1];
 extern osThreadId_t TID_Display;
 
 // Local variables.
@@ -163,16 +164,6 @@ void netCGI_ProcessData (uint8_t code, const char *data, uint32_t len) {
         osThreadFlagsSet (TID_Display, 0x01);			// Envio flag al LCD de que se quiere escribir algo
       }
       else if (strncmp (var, "lcd2=", 5) == 0) {	// Comparamos que los primeros 5 caracteres de var sean iguales que lcd2=
-        // LCD Module line 2 text
-        strcpy (lcd_text[1], var+5);							// Copia el contenido que hay en var+5, en lcd_text[1]
-        osThreadFlagsSet (TID_Display, 0x01);			// Envio flag al LCD de que se quiere escribir algo
-      }
-      else if (strncmp (var, "hour=", 5) == 0) {	// Comparamos que los primeros 5 caracteres de var sean iguales que lcd1=
-        // LCD Module line 1 text
-        strcpy (lcd_text[0], var+5);							// Copia el contenido que hay en var+5, en lcd_text[0]. Le sumamos 5 a var, porque sino se nos pintaría siempre lcd1= antes de lo que escribamos
-        osThreadFlagsSet (TID_Display, 0x01);			// Envio flag al LCD de que se quiere escribir algo
-      }
-      else if (strncmp (var, "date=", 5) == 0) {	// Comparamos que los primeros 5 caracteres de var sean iguales que lcd2=
         // LCD Module line 2 text
         strcpy (lcd_text[1], var+5);							// Copia el contenido que hay en var+5, en lcd_text[1]
         osThreadFlagsSet (TID_Display, 0x01);			// Envio flag al LCD de que se quiere escribir algo
@@ -373,10 +364,10 @@ uint32_t netCGI_Script (const char *env, char *buf, uint32_t buflen, uint32_t *p
       // RTC Module control from 'rtc.cgi'
       switch (env[2]) {
         case '1':
-          len = (uint32_t)sprintf (buf, &env[4], lcd_text[0]);
+          len = (uint32_t)sprintf (buf, &env[4], rtc_text[0]);
           break;
         case '2':
-          len = (uint32_t)sprintf (buf, &env[4], lcd_text[1]);
+          len = (uint32_t)sprintf (buf, &env[4], rtc_text[1]);
           break;
       }
       break;
@@ -393,14 +384,7 @@ uint32_t netCGI_Script (const char *env, char *buf, uint32_t buflen, uint32_t *p
       len = (uint32_t)sprintf (buf, "<checkbox><id>button%c</id><on>%s</on></checkbox>",
                                env[1], (get_button () & (1 << (env[1]-'0'))) ? "true" : "false");
       break;
-    
-    case 'z':
-      // AD Input from 'ad.cgx'
-      adv = AD_in (0);
-      len = (uint32_t)sprintf (buf, &env[1], adv);
-      break;
-
-    
+		
   }
   return (len);
 }

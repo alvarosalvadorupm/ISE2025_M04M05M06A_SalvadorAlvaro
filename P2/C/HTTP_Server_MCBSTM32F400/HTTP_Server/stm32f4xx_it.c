@@ -82,7 +82,11 @@ void RTC_Alarm_IRQHandler(void){
 
 // Callback que se ejecuta cuando salta la alarma
 void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *RtcHandle){
-
+	
+	__HAL_RTC_ALARM_CLEAR_FLAG(RtcHandle, RTC_FLAG_ALRAF);
+	
+//	RTC_Alarm_Config();
+	
 	Parpadear_LED = true;
 	
 }

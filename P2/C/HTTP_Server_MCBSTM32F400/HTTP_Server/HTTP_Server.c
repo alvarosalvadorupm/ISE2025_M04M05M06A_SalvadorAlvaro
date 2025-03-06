@@ -40,6 +40,7 @@ extern void     netDHCP_Notify (uint32_t if_num, uint8_t option, const uint8_t *
 
 extern bool LEDrun;
 extern char lcd_text[2][20+1];
+extern char rtc_text[2][20+1];
 
 extern osThreadId_t TID_Display;
 extern osThreadId_t TID_Led;
@@ -69,7 +70,9 @@ static void Alarm(void *arg);
 /* Buffers used for displaying Time and Date */
 uint8_t aShowTime[10] = {0};
 uint8_t aShowDate[10] = {0};
-													 
+
+uint32_t flag = 0x00;
+
 __NO_RETURN void app_main (void *arg);
 
 /* Read analog inputs */
@@ -141,11 +144,10 @@ static __NO_RETURN void Date_Time_RTC (void *arg) {
     memcpy(rtc_text[1], aShowDate, sizeof(aShowDate));
     rtc_text[1][sizeof(aShowDate)] = '\0';  // Asegurar terminación
 		
-		osThreadFlagsSet (TID_Display, 0x01);			// Envio flag al LCD de que se quiere escribir algo
+		osThreadFlagsSet (TID_Display, 0x02);
 	}
 	
 }
-
 
 /*----------------------------------------------------------------------------
   Thread 'Display': LCD display handler
@@ -163,14 +165,23 @@ static __NO_RETURN void Display (void *arg) {
 
   while(1) {
     /* Wait for signal from DHCP */
-    osThreadFlagsWait (0x01U, osFlagsWaitAll, osWaitForever);
+    flag = osThreadFlagsWait (0x03U, osFlagsWaitAny, osWaitForever);
 		
 		cleanLCD();
+		
+		if(flag == 0x01){
 
-    /* Display user text line 1 */
-		write_lcd(lcd_text[0],1, strlen(lcd_text[0]));
-		/* Display user text line 2 */
-		write_lcd(lcd_text[1],2, strlen(lcd_text[1]));
+			/* Display user text line 1 */
+			write_lcd(lcd_text[0],1, strlen(lcd_text[0]));
+			/* Display user text line 2 */
+			write_lcd(lcd_text[1],2, strlen(lcd_text[1]));
+		}else if(flag == 0x02){
+			
+			/* Display user text line 1 */
+			write_lcd(rtc_text[0],1, strlen(rtc_text[0]));
+			/* Display user text line 2 */
+			write_lcd(rtc_text[1],2, strlen(rtc_text[1]));
+		}
 		
 //    LCD_Update();
     

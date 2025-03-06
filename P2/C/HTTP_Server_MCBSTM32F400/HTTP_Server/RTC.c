@@ -11,7 +11,7 @@ RTC_AlarmTypeDef alarmstrcut;		// Declaracion de la esctructura de la alarma
 //Fecha
 uint8_t RTC_Anno = 0x25;
 uint8_t RTC_Mes = RTC_MONTH_MARCH;
-uint8_t RTC_Num_Dia = 0x03;
+uint8_t RTC_Num_Dia = 0x05;
 uint8_t RTC_Dia_Semana = RTC_WEEKDAY_MONDAY;
 
 //Hora
@@ -23,8 +23,8 @@ volatile bool Parpadear_LED = false;
 
 /* Private function prototypes -----------------------------------------------*/
 void RTC_Config(void);
-void RTC_DateConfig(void);
-void RTC_TimeConfig(void);
+void RTC_DateConfig(uint8_t RTC_Anno, uint8_t RTC_Mes, uint8_t RTC_Num_Dia, uint8_t RTC_Dia_Semana);
+void RTC_TimeConfig(uint8_t RTC_Hora, uint8_t RTC_Min, uint8_t RTC_Seg);
 void RTC_Hora_Fecha(uint8_t *showtime, uint8_t *showdate);
 void RTC_Alarm_Config(void);
 void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc);
@@ -82,8 +82,8 @@ void RTC_Config(void){
 																															// y si es asi, lo vuelve a configurar
   {
     /* Configure RTC Calendar */
-		RTC_DateConfig();
-		RTC_TimeConfig();
+		RTC_DateConfig(RTC_Anno, RTC_Mes, RTC_Num_Dia, RTC_Dia_Semana);
+		RTC_TimeConfig(RTC_Hora, RTC_Min, RTC_Seg);
 		RTC_Alarm_Config();
   }
   else
@@ -94,7 +94,7 @@ void RTC_Config(void){
 	
 }
 
-void RTC_DateConfig(void){
+void RTC_DateConfig(uint8_t RTC_Anno, uint8_t RTC_Mes, uint8_t RTC_Num_Dia, uint8_t RTC_Dia_Semana){
 	
 	RTC_DateTypeDef sdatestructure;	// Declaracion de la estructura empleada para configurar la fecha del RTC
 	
@@ -114,7 +114,7 @@ void RTC_DateConfig(void){
 	
 }
 
-void RTC_TimeConfig(void){
+void RTC_TimeConfig(uint8_t RTC_Hora, uint8_t RTC_Min, uint8_t RTC_Seg){
 	
 	/*##-2- Configure the Time #################################################*/
   /* Set Time: 02:00:00 */
@@ -153,9 +153,9 @@ void RTC_Hora_Fecha(uint8_t *showtime, uint8_t *showdate)
   /* Get the RTC current Date */
   HAL_RTC_GetDate(&RtcHandle, &sdatestructureget, RTC_FORMAT_BIN);	// Recoge la informacion relacionada con la fecha actual del RTC
   /* Display time Format : hh:mm:ss */
-  sprintf((char *)showtime, "%2d:%2d:%2d", stimestructureget.Hours, stimestructureget.Minutes, stimestructureget.Seconds);
+  sprintf((char *)showtime, "%02d:%02d:%02d", stimestructureget.Hours, stimestructureget.Minutes, stimestructureget.Seconds);
   /* Display date Format : mm-dd-yy */
-  sprintf((char *)showdate, "%2d-%2d-%2d", sdatestructureget.Month, sdatestructureget.Date, 2000 + sdatestructureget.Year);
+  sprintf((char *)showdate, "%02d-%02d-%02d", sdatestructureget.Date, sdatestructureget.Month, 2000 + sdatestructureget.Year);
 }
 
 void RTC_Alarm_Config(void){
