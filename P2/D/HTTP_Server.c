@@ -61,6 +61,7 @@ osThreadId_t TID_Display;
 osThreadId_t TID_Led;
 osThreadId_t TID_RTC;
 osThreadId_t TID_ALARM;
+osThreadId_t TID_PULSADOR;
 
 /* Timers IDs */
 osTimerId_t tim_timer_1sec;
@@ -72,12 +73,13 @@ static void BlinkLed (void *arg);
 static void Display  (void *arg);
 static void Date_Time_RTC (void *arg);
 static void Alarm(void *arg);
+static void Pulsador(void *arg);
 
 /* Buffers used for displaying Time and Date */
 uint8_t aShowTime[10] = {0};
 uint8_t aShowDate[10] = {0};
 
-uint8_t segundos = 0;
+uint8_t Parp_LED_R = 0;
 uint32_t flag = 0x00;
 
 __NO_RETURN void app_main (void *arg);
@@ -112,11 +114,11 @@ void netDHCP_Notify (uint32_t if_num, uint8_t option, const uint8_t *val, uint32
 
 void Timer_1sec_Callback (void){
 	
-	if(segundos < 4){
+	if(Parp_LED_R < 4){
 		HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_14);
-		segundos++;
+		Parp_LED_R++;
 	}else{
-		segundos = 0;
+		Parp_LED_R = 0;
 		osTimerStop(tim_timer_1sec);
 	}
 	
@@ -155,6 +157,24 @@ int init_Timers(void){
 }
 
 /*----------------------------------------------------------------------------
+  Thread 'PULSADOR': Funcion para gestionar el pulador de usuario
+ *---------------------------------------------------------------------------*/
+
+static __NO_RETURN void Pulsador(void *arg){
+	
+	(void)arg;
+	
+	while(1){
+		
+		osThreadFlagsWait(0x01U, osFlagsWaitAny, osWaitForever);
+		
+		RTC_DateConfig(0, 1, 1, 1);
+		RTC_TimeConfig(0, 0, 0);
+		
+	}
+}
+
+/*----------------------------------------------------------------------------
   Thread 'ALARM': Funcion para gestionar los booleanos de las alarmas
  *---------------------------------------------------------------------------*/
 
@@ -164,15 +184,13 @@ static __NO_RETURN void Alarm(void *arg){
 	
 	while(1){
 		
-		if(Parpadear_LED == true){
-			Parpadear_LED = false;
+		osThreadFlagsWait(0x01U, osFlagsWaitAny, osWaitForever);
+		
+		for(uint8_t i = 0; i < 5; i++){
+				
+			HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_0);
+			osDelay(1000);
 			
-			for(uint8_t i = 0; i < 5; i++){
-				
-				HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_0);
-				osDelay(1000);
-				
-			}
 		}
 	}
 }
@@ -284,12 +302,16 @@ __NO_RETURN void app_main (void *arg) {
 	// Inicializacion Timers
 	init_Timers();
 	
+	// Inicializacion Pulsador Usuario
+	Pulsador_B1();
+	
   netInitialize ();			// Inicializa un monton de cosas del Ethernet
 
   TID_Led     = osThreadNew (BlinkLed, NULL, NULL);
   TID_Display = osThreadNew (Display,  NULL, NULL);
 	TID_RTC     = osThreadNew (Date_Time_RTC, NULL, NULL);
 	TID_ALARM   = osThreadNew (Alarm, NULL, NULL);
+	TID_PULSADOR = osThreadNew (Pulsador, NULL, NULL);
 	
   osThreadExit();
 }

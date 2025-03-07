@@ -20,8 +20,6 @@ uint8_t RTC_Hora = 0x12;
 uint8_t RTC_Min = 0x59;
 uint8_t RTC_Seg = 0x00;
 
-volatile bool Parpadear_LED = false;
-
 /* Private function prototypes -----------------------------------------------*/
 void RTC_Config(void);
 void RTC_DateConfig(uint8_t RTC_Anno, uint8_t RTC_Mes, uint8_t RTC_Num_Dia, uint8_t RTC_Dia_Semana);

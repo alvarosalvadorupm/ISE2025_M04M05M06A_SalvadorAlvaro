@@ -60,7 +60,10 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+extern osThreadId_t TID_ALARM;
+extern osThreadId_t TID_PULSADOR;
 /* Private function prototypes -----------------------------------------------*/
+void EXTI15_10_IRQHandler(void);
 /* Private functions ---------------------------------------------------------*/
 
 /******************************************************************************/
@@ -72,6 +75,19 @@
   * @param  None
   * @retval None
   */
+
+void EXTI15_10_IRQHandler(void){
+	
+	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_13);	// Limpio el flag de la interrupción del pulsador
+	
+}
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
+	
+	// Funciones a realizar
+	osThreadFlagsSet (TID_PULSADOR, 0x01);
+	
+}
 
 void RTC_Alarm_IRQHandler(void){
 	
@@ -87,7 +103,7 @@ void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *RtcHandle){
 	
 //	RTC_Alarm_Config();
 	
-	Parpadear_LED = true;
+	osThreadFlagsSet (TID_ALARM, 0x01);
 	
 }
 

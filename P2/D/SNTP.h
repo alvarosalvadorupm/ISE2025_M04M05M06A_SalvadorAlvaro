@@ -10,5 +10,6 @@
 	#include "RTC.h"
 	
 	void init_SNTP(void);
+	void Pulsador_B1(void);
 	
 #endif /* __SNTP_H */

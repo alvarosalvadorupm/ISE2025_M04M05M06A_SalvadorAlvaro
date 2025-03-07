@@ -67,3 +67,19 @@ void time_callback(uint32_t seconds, uint32_t seconds_fraction){
 	}
 		
 }
+
+void Pulsador_B1(void){
+	
+	GPIO_InitTypeDef GPIO_InitStruct;
+	
+	__HAL_RCC_GPIOC_CLK_ENABLE();	// Habilitamos el reloj del puerto asociado al pulsador. Puerto C
+	
+	// Configuracion del Pulsador de usuario B1
+	GPIO_InitStruct.Pin = GPIO_PIN_13;
+	GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+	GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+	
+	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);	// Habilitamos las interrupciones de todos los pines del 10 al 15 de todos los puertos
+	
+};
