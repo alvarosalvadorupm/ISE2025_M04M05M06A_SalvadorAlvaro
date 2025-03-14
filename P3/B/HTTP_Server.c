@@ -177,7 +177,9 @@ int init_Timers(void){
 }
 
 
-void Low_Power_Mode(void){
+static __NO_RETURN void Low_Power_Mode (void *arg){
+  
+  (void)arg;
   
   osTimerStart(tim_timer_100ms, 100);
   osTimerStart(tim_timer_15s, 15000);
@@ -188,7 +190,7 @@ void Low_Power_Mode(void){
   Thread 'PULSADOR': Funcion para gestionar el pulador de usuario
  *---------------------------------------------------------------------------*/
 
-static __NO_RETURN void Pulsador(void *arg){
+static __NO_RETURN void Pulsador (void *arg){
 	
 	(void)arg;
 	
@@ -197,6 +199,7 @@ static __NO_RETURN void Pulsador(void *arg){
 		osThreadFlagsWait(0x01U, osFlagsWaitAny, osWaitForever);
 		
     osTimerStart(tim_timer_100ms, 100);
+    osTimerStart(tim_timer_15s, 15000);
 		RTC_DateConfig(0, 1, 1, 1);
 		RTC_TimeConfig(0, 0, 0);
 		
@@ -207,7 +210,7 @@ static __NO_RETURN void Pulsador(void *arg){
   Thread 'ALARM': Funcion para gestionar los booleanos de las alarmas
  *---------------------------------------------------------------------------*/
 
-static __NO_RETURN void Alarm(void *arg){
+static __NO_RETURN void Alarm (void *arg){
 	
 	(void)arg;
 	
