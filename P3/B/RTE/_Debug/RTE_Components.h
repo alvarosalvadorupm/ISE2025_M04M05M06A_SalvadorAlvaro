@@ -60,6 +60,8 @@
 #define RTE_DEVICE_HAL_CORTEX
 /* Keil::Device:STM32Cube HAL:DMA:1.7.9 */
 #define RTE_DEVICE_HAL_DMA
+/* Keil::Device:STM32Cube HAL:ETH:1.7.9 */
+#define RTE_DEVICE_HAL_ETH
 /* Keil::Device:STM32Cube HAL:GPIO:1.7.9 */
 #define RTE_DEVICE_HAL_GPIO
 /* Keil::Device:STM32Cube HAL:PWR:1.7.9 */

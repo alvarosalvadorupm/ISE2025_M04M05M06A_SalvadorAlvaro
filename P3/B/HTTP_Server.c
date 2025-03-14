@@ -138,18 +138,19 @@ void Timer_6sec_Callback(void){
 void Timer_3min_Callback(void){
 	
 	init_SNTP();
-//	osTimerStart(tim_timer_1sec, 500);
+	osTimerStart(tim_timer_1sec, 500);
 	
 }
 
 void Timer_100ms_Callback(void){
   
-  HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_0);
+  HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_7);
   
 }
 
 void Timer_15s_Callback(void){
   
+  HAL_NVIC_DisableIRQ(RTC_Alarm_IRQn);
   Encender_Apagar_LEDs(0x04); // Encendemos el LED Rojo antes de entrar en el Modo Sleep
   osTimerStop(tim_timer_100ms);
   SleepMode_Measure();
@@ -177,7 +178,7 @@ int init_Timers(void){
 }
 
 
-static __NO_RETURN void Low_Power_Mode (void *arg){
+static void Low_Power_Mode (void *arg){
   
   (void)arg;
   
@@ -198,8 +199,9 @@ static __NO_RETURN void Pulsador (void *arg){
 		
 		osThreadFlagsWait(0x01U, osFlagsWaitAny, osWaitForever);
 		
+    HAL_NVIC_EnableIRQ(RTC_Alarm_IRQn);
     osTimerStart(tim_timer_100ms, 100);
-    osTimerStart(tim_timer_15s, 15000);
+//    osTimerStart(tim_timer_15s, 15000);
 		RTC_DateConfig(0, 1, 1, 1);
 		RTC_TimeConfig(0, 0, 0);
 		
@@ -339,7 +341,7 @@ __NO_RETURN void app_main (void *arg) {
 	
   netInitialize ();			// Inicializa un monton de cosas del Ethernet
 
-//  TID_Led     = osThreadNew (BlinkLed, NULL, NULL);
+  TID_Led     = osThreadNew (BlinkLed, NULL, NULL);
   TID_Display   = osThreadNew (Display,  NULL, NULL);
   TID_RTC       = osThreadNew (Date_Time_RTC, NULL, NULL);
   TID_ALARM     = osThreadNew (Alarm, NULL, NULL);

@@ -83,7 +83,7 @@ void RTC_Config(void){
     /* Configure RTC Calendar */
 //		RTC_DateConfig(RTC_Anno, RTC_Mes, RTC_Num_Dia, RTC_Dia_Semana);
 //		RTC_TimeConfig(RTC_Hora, RTC_Min, RTC_Seg);
-//		RTC_Alarm_Config();
+		RTC_Alarm_Config();
   }
   else
   {
