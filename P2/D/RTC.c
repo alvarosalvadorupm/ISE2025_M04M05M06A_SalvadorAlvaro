@@ -142,17 +142,15 @@ void RTC_TimeConfig(uint8_t RTC_Hora, uint8_t RTC_Min, uint8_t RTC_Seg){
 
 void RTC_Hora_Fecha(uint8_t *showtime, uint8_t *showdate)
 {
-  RTC_DateTypeDef sdatestructureget;
-  RTC_TimeTypeDef stimestructureget;
 
   /* Get the RTC current Time */
-  HAL_RTC_GetTime(&RtcHandle, &stimestructureget, RTC_FORMAT_BIN);	// Recoge la informacion relacioanda con la hora actual del RTC
+  HAL_RTC_GetTime(&RtcHandle, &stimestructure, RTC_FORMAT_BIN);	// Recoge la informacion relacioanda con la hora actual del RTC
   /* Get the RTC current Date */
-  HAL_RTC_GetDate(&RtcHandle, &sdatestructureget, RTC_FORMAT_BIN);	// Recoge la informacion relacionada con la fecha actual del RTC
+  HAL_RTC_GetDate(&RtcHandle, &sdatestructure, RTC_FORMAT_BIN);	// Recoge la informacion relacionada con la fecha actual del RTC
   /* Display time Format : hh:mm:ss */
-  sprintf((char *)showtime, "%02d:%02d:%02d", stimestructureget.Hours, stimestructureget.Minutes, stimestructureget.Seconds);
+  sprintf((char *)showtime, "%02d:%02d:%02d", stimestructure.Hours, stimestructure.Minutes, stimestructure.Seconds);
   /* Display date Format : mm-dd-yy */
-  sprintf((char *)showdate, "%02d-%02d-%02d", sdatestructureget.Date, sdatestructureget.Month, 2000 + sdatestructureget.Year);
+  sprintf((char *)showdate, "%02d-%02d-%02d", sdatestructure.Date, sdatestructure.Month, 2000 + sdatestructure.Year);
 }
 
 void RTC_Alarm_Config(void){
