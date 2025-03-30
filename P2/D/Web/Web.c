@@ -21,8 +21,8 @@ typedef struct _imageFileItem {
 
 #define IMAGE_FILE_COUNT 21U
 
-/* Last-Modified: Tue, 11 Mar 2025 11:11:11 GMT */
-const uint32_t imageLastModified = 1741691471U;
+/* Last-Modified: Fri,    Mar 2025 19:16:10 GMT */
+const uint32_t imageLastModified = 1741374970U;
 
 static const uint8_t imageFileData[27601U] = {
 

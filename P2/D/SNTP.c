@@ -30,9 +30,8 @@ void time_callback(uint32_t seconds, uint32_t seconds_fraction){
 		/*##-1- Configure the Date of the SNTP #################################################*/
 		sdatestructure.Year = SNTP_Date_Hour.tm_year - 100;	// Restamos 100 al valor del año, ya que
 																												// en la estructura tm el valor de los años
-																												// se devuelve desde 1900, por lo que sí es 2025
-																												// devuelve 125, y nos quedamos con 25 ya que luego
-																												// en la funcion RTC_Hora_Fecha sumaremos 2000 a dicho valor
+																												// se represetna desde 1900, y luego en la funcion
+																												// RTC_Hora_Fecha sumaremos 2000 a dicho valor
 		
 		sdatestructure.Month = SNTP_Date_Hour.tm_mon + 1;	// Sumamos 1 al valor de la estructura, ya que
 																											// enero corresponde al valor 0 y diciembre al 11
@@ -49,7 +48,7 @@ void time_callback(uint32_t seconds, uint32_t seconds_fraction){
 		
 		/*##-2- Configure the Time of the SNTP #################################################*/
 		
-		stimestructure.Hours = (SNTP_Date_Hour.tm_hour + 1) % 24;	// Establece el valor de las horas del SNTP
+		stimestructure.Hours = (SNTP_Date_Hour.tm_hour + 2) % 24;	// Establece el valor de las horas del SNTP
 		stimestructure.Minutes = SNTP_Date_Hour.tm_min;	// Establece el valor de los minutos del SNTP
 		stimestructure.Seconds = SNTP_Date_Hour.tm_sec;	// Establece el valor de los segundos del SNTP
 		stimestructure.TimeFormat = RTC_HOURFORMAT_24;	// Indica que el formato es 24 horas
